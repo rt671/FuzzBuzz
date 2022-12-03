@@ -3,16 +3,13 @@ import numpy as np
 import time
 import string
 from nltk.corpus import stopwords
-# from build_index import searchable_encryption
 import csv
+import sys
 
-# data = pd.read_csv("Advanced_Meter.csv")
-# data.info()
-
-# print(data.head())
 n_doc=4
 inverted_index = {}
 document ="India, officially the Republic of India, is a country in South Asia. It is the seventh largest country by area, the second most populous country, and the most populous democracy in the world. Bounded by the Indian Ocean on the south, the Arabian Sea on the southwest, and the Bay of Bengal on the southeast, it shares land borders with Pakistan to the west; China, Nepal, and Bhutan to the north; and Bangladesh and Myanmar to the east. In the Indian Ocean, India is in the vicinity of Sri Lanka and the Maldives; its Andaman and Nicobar Islands share a maritime border with Thailand, Myanmar, and Indonesia. The nation's capital city is New Delhi."
+
 def text_preprocess(text):
     nltk_english_stopwords = stopwords.words('english')
     # remove punctuations
@@ -26,20 +23,7 @@ def text_preprocess(text):
         if word not in nltk_english_stopwords:
             cleaned_text += word + " " 
     return cleaned_text
-
-# def createIndex(doc, i):
-#     # print(inverted_index)
-#     for term in doc.split():
-#         if term in inverted_index:
-#             inverted_index[term][i] +=1
-#             # print(inverted_index)
-            
-#         else:
-#             inverted_index[term] = ([0 for i in range(4)])
-#             inverted_index[term][i]+=1
-#             # print(inverted_index) 
-#     return inverted_index
-
+    
 def createIndex(doc, i):
     # print(inverted_index)
     for term in doc.split():
@@ -49,6 +33,7 @@ def createIndex(doc, i):
 
 # document = input("Please enter the document text:  ")
 
+# document = sys.argv[1]
 cleaned_doc = text_preprocess(document)
 print("\nThe cleaned text is: \n", cleaned_doc)
 indexTable = createIndex(cleaned_doc, 0)

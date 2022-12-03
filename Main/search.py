@@ -7,7 +7,7 @@ def build_codeword(ID, trapdoor):
     ID_index = MD5.new()
     ID_index.update(str(ID).encode('utf-8'))
     # print(trapdoor);
-    ECB_cipher = AES.new(b'{i\xb93\xf3\x8c\x12\x85\x98\xa0\x10\xe4\xe09d\x17', AES.MODE_ECB)
+    ECB_cipher = AES.new(b']o\x1f\xbe\xbe-2\x12]\xf5 \nC!\x86\xa3', AES.MODE_ECB)
     # print(ID, ECB_cipher.encrypt(ID_index.digest()))
     return ECB_cipher.encrypt(ID_index.digest())
 

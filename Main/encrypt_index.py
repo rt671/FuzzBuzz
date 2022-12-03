@@ -44,6 +44,7 @@ def build_index(master_key, ID, keyword_list):
     return secure_index
 
 def searchable_encryption(document, index_table, master_key):
+    print("Function running")
     raw_data = pd.read_csv(index_table)
     features = list(raw_data)
     print(raw_data)
@@ -94,7 +95,7 @@ if __name__ == "__main__":
     # keyword_list_file_name = input("please input the file stores keyword type:  ")
     # keyword_type_list = open("keywordlist").read().split(",")
     document_name="index.csv"
-    document = "India, officially the Republic of India (Hindi: Bhārat Gaṇarājya),[25] is a country in South Asia. It is the seventh-largest country by area, the second-most populous country, and the most populous democracy in the world. Bounded by the Indian Ocean on the south, the Arabian Sea on the southwest, and the Bay of Bengal on the southeast, it shares land borders with Pakistan to the west;[f] China, Nepal, and Bhutan to the north; and Bangladesh and Myanmar to the east. In the Indian Ocean, India is in the vicinity of Sri Lanka and the Maldives; its Andaman and Nicobar Islands share a maritime border with Thailand, Myanmar, and Indonesia. The nation's capital city is New Delhi."
+    document = "India, officially the Republic of India is a country in South Asia. It is the seventh-largest country by area, the second-most populous country, and the most populous democracy in the world. Bounded by the Indian Ocean on the south, the Arabian Sea on the southwest, and the Bay of Bengal on the southeast, it shares land borders with Pakistan to the west; China, Nepal, and Bhutan to the north; and Bangladesh and Myanmar to the east. In the Indian Ocean, India is in the vicinity of Sri Lanka and the Maldives; its Andaman and Nicobar Islands share a maritime border with Thailand, Myanmar, and Indonesia. The nation's capital city is New Delhi."
 
     searchable_encryption(document, document_name, master_key)
 
