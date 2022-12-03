@@ -1,6 +1,6 @@
 from Crypto.Cipher import AES
 from Crypto.Hash import MD5
-
+import sys
 
 def build_trapdoor(MK, keyword):
     keyword_index = MD5.new()
@@ -11,14 +11,13 @@ def build_trapdoor(MK, keyword):
 
 if __name__ == "__main__":
 
-    keyword = input("Please input the keyword you want to search:  ")
-
-    master_key_file_name = input("Please input the file stored the master key:  ")
-    master_key = open(master_key_file_name).read()
-    if len(master_key) > 16:
-        print ("the length of master key is larger than 16 bytes, only the first 16 bytes are used")
-        master_key = bytes(master_key[:16])
-
+    keyword = sys.argv[1]
+    # keyword = "india"
+    # master_key = open(master_key_file_name).read()
+    master_key = "0123456789abcdef0123456789abcdef"
+    # if len(master_key) > 16:
+    #     print ("the length of master key is larger than 16 bytes, only the first 16 bytes are used")
+    #     master_key = bytes(master_key[:16])
 
     trapdoor_file = open(keyword + "_trapdoor", "w+")
     trapdoor_of_keyword = build_trapdoor(master_key, keyword)

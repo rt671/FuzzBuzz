@@ -1,14 +1,14 @@
 import pandas as pd
 from Crypto.Cipher import AES
 from Crypto.Hash import MD5
+import sys
+import os
 # import time
 
 def build_codeword(ID, trapdoor):
     ID_index = MD5.new()
     ID_index.update(str(ID).encode('utf-8'))
-    # print(trapdoor);
     ECB_cipher = AES.new(b']o\x1f\xbe\xbe-2\x12]\xf5 \nC!\x86\xa3', AES.MODE_ECB)
-    # print(ID, ECB_cipher.encrypt(ID_index.digest()))
     return ECB_cipher.encrypt(ID_index.digest())
 
 def search_index(document, trapdoor):
@@ -25,8 +25,8 @@ def search_index(document, trapdoor):
 
 if __name__ == "__main__":
 
-    # index_file_name = input("Please input the index file you want to search:  ")
-    # keyword_trapdoor = input("Please input the file stored the trapdoor you want to search:  ")
-    keyword_trapdoor = open("south_trapdoor").read().strip()
+    keyword = sys.argv[1]
+    keyword_trapdoor = open(keyword + "_trapdoor").read().strip()
     search_result = search_index("yes_index.csv", keyword_trapdoor)
     print ("The identifier for the set of files that contain the keyword are: \n", search_result)
+    os.remove(keyword+"_trapdoor")
