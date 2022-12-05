@@ -1,6 +1,7 @@
 from Crypto.Cipher import AES
 from Crypto.Hash import MD5
 import sys
+from fuzzygeneration import addFuzzy
 
 def build_trapdoor(MK, keyword):
     keyword_index = MD5.new()
@@ -12,6 +13,7 @@ def build_trapdoor(MK, keyword):
 if __name__ == "__main__":
 
     keyword = sys.argv[1]
+    fuzzySet = addFuzzy(keyword, 2)
     # keyword = "india"
     # master_key = open(master_key_file_name).read()
     master_key = "0123456789abcdef0123456789abcdef"
@@ -20,6 +22,10 @@ if __name__ == "__main__":
     #     master_key = bytes(master_key[:16])
 
     trapdoor_file = open(keyword + "_trapdoor", "w+")
-    trapdoor_of_keyword = build_trapdoor(master_key, keyword)
-    trapdoor_file.write(str(trapdoor_of_keyword))
+    trapdoor_set =""
+    for word in fuzzySet:
+        trapdoor_of_keyword = build_trapdoor(master_key, word)
+    trapdoor_set += trapdoor_of_keyword + ' '
+
+    trapdoor_file.write(str(trapdoor_set))
     trapdoor_file.close()

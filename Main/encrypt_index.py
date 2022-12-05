@@ -7,6 +7,8 @@ import time
 import hashlib
 from PyPDF2 import PdfFileWriter, PdfFileReader
 import sys
+import json
+import ast
 
 def build_trapdoor(MK, keyword):
     keyword_index = MD5.new()
@@ -33,27 +35,36 @@ def build_index(master_key, ID, keyword_list):
     return secure_index
 
 def searchable_encryption(index_table, master_key):
-    raw_data = pd.read_csv(index_table)
-    features = list(raw_data)
-    print(raw_data)
-    raw_data = raw_data.values
+    # raw_data = pd.read_csv(index_table)
+    # features = list(raw_data)
+    # print(raw_data)
+    # raw_data = raw_data.values
     # print(raw_data)
     # document_number = [i for i in range(0, len(features)) if features[i] in keyword_type_list]
 
     # index_header = []
     # for i in range(1, len(keyword_type_list) + 1):
     #     index_header.append("doc_" + str(i))
-    document_index = []
-    start_time = time.time()
-    for row in range(raw_data.shape[0]):
-        record = raw_data[row]
-        res = build_index(master_key, row, record)
-        document_index.append(res)
-
-    time_cost = time.time() - start_time
-    print (time_cost)
-    document_index_dataframe = pd.DataFrame(np.array(document_index), columns=features)
-    document_index_dataframe.to_csv("yes_index.csv") #document.split(".")[0] + 
+    document_index = {}
+    # start_time = time.time()
+    cntr=0
+    for keyArr, valArr in index_table.items():
+        # record = raw_data[row]
+        for key in keyArr:
+            enckey = build_index(master_key, cntr, key)
+        
+        for val in valArr:
+            encval = build_index(master_key, cntr, val)
+            
+        document_index[enckey] = encval
+        # document_index.append(res)
+        cntr+=1
+    # print("hello")
+    print(document_index)
+    # time_cost = time.time() - start_time
+    # print (time_cost)
+    # document_index_dataframe = pd.DataFrame(np.array(document_index), columns=features)
+    # document_index_dataframe.to_csv("yes_index.csv") #document.split(".")[0] + 
 
     # encr_index_table = {}
     # i=0
@@ -86,7 +97,19 @@ if __name__ == "__main__":
     # keyword_type_list = open("keywordlist").read().split(",")
     # document_name="D:\work\BTP\CODE\Backend\index.csv"
     doc_text = sys.argv[1]
-    index_name = "D:\work\BTP\CODE\Backend\index.csv"
-    searchable_encryption(index_name, master_key)
-    encrypt_doc(doc_text, master_key)
-    print ("Finished")
+    index_str = sys.argv[2]
+    # print(doc_text)
+    # print(index_str)
+    # index_str = index_str[1:-3]
+    # print("THE STRING IS ", index_str)
+
+    json_acceptable_string = index_str.replace("'", "\"")
+    # print(json_acceptable_string)
+    # index_table = json.loads(json_acceptable_string)
+    # print(index_table)
+    index_table = ast.literal_eval(json_acceptable_string)
+    print(index_table)
+    # index_name = "D:/work/BTP/CODE/Backend/index.csv"
+    # searchable_encryption(index_table, master_key)
+    # encrypt_doc(doc_text, master_key)
+    # print ("Finished")

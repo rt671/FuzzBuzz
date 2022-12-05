@@ -5,22 +5,30 @@ import sys
 import os
 # import time
 
-def build_codeword(ID, trapdoor):
+def build_codeword(ID, trapdoors):
     ID_index = MD5.new()
     ID_index.update(str(ID).encode('utf-8'))
     ECB_cipher = AES.new(b']o\x1f\xbe\xbe-2\x12]\xf5 \nC!\x86\xa3', AES.MODE_ECB)
     return ECB_cipher.encrypt(ID_index.digest())
 
-def search_index(document, trapdoor):
+def search_index(document, trapdoors):
     search_result = []
     data_index = pd.read_csv(document)
     data_index = data_index.values
     # start_time = time.time()
-    for row in range(data_index.shape[0]):
-        if str(build_codeword(row,trapdoor)) in data_index[row]:
-            search_result.append(row)
+    # for row in range(data_index.shape[0]):
+    #     if str(build_codeword(row, trapdoor)) in data_index[row]:
+    #         search_result.append(row)
 
-    # print time.time() - start_time
+    for trapdoor in trapdoors:
+        cntr=0
+        for key, val in document.items():
+            for keyword in key:
+                if(str(build_codeword(cntr, trapdoor)) == keyword):
+                    search_result.append(cntr)
+                    break
+            cntr+=1
+        # print time.time() - start_time
     return search_result
 
 if __name__ == "__main__":
