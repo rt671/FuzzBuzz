@@ -52,11 +52,14 @@ def searchable_encryption(index_table, master_key):
         # record = raw_data[row]
         for key in keyArr:
             enckey = build_index(master_key, cntr, key)
-        
+            # add enckey to an encrypted key array
+
         for val in valArr:
             encval = build_index(master_key, cntr, val)
-            
-        document_index[enckey] = encval
+            #add encval to an encrypted val array
+
+        document_index[encrypted key array (tuple)]  = encrypted val array
+        
         # document_index.append(res)
         cntr+=1
     # print("hello")
