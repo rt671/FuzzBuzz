@@ -15,8 +15,10 @@ def build_trapdoor(MK, keyword):
     keyword_index.update(str(keyword).encode('utf-8'))
     # print(keyword_index)
     # key=bytes(MK,'hex');
-    key = bytes.fromhex("0123456789abcdef0123456789abcdef")
-    ECB_cipher = AES.new(key, AES.MODE_ECB)
+    # key = bytes.fromhex("0123456789abcdef0123456789abcdef")
+    MK = MK.encode('utf-8')
+    ECB_cipher = AES.new(MK, AES.MODE_ECB)
+    # ECB_cipher = AES.new(key, AES.MODE_ECB)
     return ECB_cipher.encrypt(keyword_index.digest())
 
 def build_codeword(ID, trapdoor):
@@ -30,6 +32,7 @@ def build_index(master_key, ID, keyword_list):
     secure_index = [0] * len(keyword_list)
     for i in range(len(keyword_list)):
         codeword = build_codeword(ID, build_trapdoor(master_key, keyword_list[i]))
+        # print("Key for ", keyword_list[i], "is ", codeword, "\n")
         secure_index[i] = codeword
     random.shuffle(secure_index)
     return secure_index
@@ -50,15 +53,18 @@ def searchable_encryption(index_table, master_key):
     cntr=0
     for keyArr, valArr in index_table.items():
         # record = raw_data[row]
-        for key in keyArr:
-            enckey = build_index(master_key, cntr, key)
-            # add enckey to an encrypted key array
+        enckey = build_index(master_key, cntr, keyArr)
+        encval = build_index(master_key, cntr, valArr)
+        # for key in keyArr:
+        #     enckey = build_index(master_key, cntr, str(key))
+        #     print("Key for ", key, "is ", enckey, "\n")
+        #     # add enckey to an encrypted key array
 
-        for val in valArr:
-            encval = build_index(master_key, cntr, val)
-            #add encval to an encrypted val array
+        # for val in valArr:
+        #     encval = build_index(master_key, cntr, str(val))
+        #     #add encval to an encrypted val array
 
-        document_index[encrypted key array (tuple)]  = encrypted val array
+        document_index[tuple(enckey)]  = encval
         
         # document_index.append(res)
         cntr+=1
@@ -103,16 +109,18 @@ if __name__ == "__main__":
     index_str = sys.argv[2]
     # print(doc_text)
     # print(index_str)
-    # index_str = index_str[1:-3]
+    index_str = index_str[1:-4]
+    # index_str+="}"
     # print("THE STRING IS ", index_str)
-
+    # print(index_str)
     json_acceptable_string = index_str.replace("'", "\"")
+    # print(json_acceptable_string)
     # print(json_acceptable_string)
     # index_table = json.loads(json_acceptable_string)
     # print(index_table)
     index_table = ast.literal_eval(json_acceptable_string)
-    print(index_table)
+    # print(index_table)
     # index_name = "D:/work/BTP/CODE/Backend/index.csv"
-    # searchable_encryption(index_table, master_key)
+    searchable_encryption(index_table, master_key)
     # encrypt_doc(doc_text, master_key)
     # print ("Finished")

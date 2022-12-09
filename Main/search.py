@@ -5,22 +5,22 @@ import sys
 import os
 # import time
 
-def build_codeword(ID, trapdoors):
+def build_codeword(ID, trapdoor):
     ID_index = MD5.new()
     ID_index.update(str(ID).encode('utf-8'))
-    ECB_cipher = AES.new(b']o\x1f\xbe\xbe-2\x12]\xf5 \nC!\x86\xa3', AES.MODE_ECB)
+    ECB_cipher = AES.new(trapdoor, AES.MODE_ECB)
     return ECB_cipher.encrypt(ID_index.digest())
 
 def search_index(document, trapdoors):
     search_result = []
-    data_index = pd.read_csv(document)
-    data_index = data_index.values
+    # data_index = pd.read_csv(document)
+    # data_index = data_index.values
     # start_time = time.time()
     # for row in range(data_index.shape[0]):
     #     if str(build_codeword(row, trapdoor)) in data_index[row]:
     #         search_result.append(row)
 
-    for trapdoor in trapdoors:
+    for trapdoor in trapdoors.split(b"\n"):
         cntr=0
         for key, val in document.items():
             for keyword in key:
@@ -33,7 +33,8 @@ def search_index(document, trapdoors):
 
 if __name__ == "__main__":
 
-    keyword = sys.argv[1]
+    # keyword = sys.argv[1]
+    keyword ="india"
     keyword_trapdoor = open(keyword + "_trapdoor").read().strip()
     search_result = search_index("yes_index.csv", keyword_trapdoor)
     print ("The identifier for the set of files that contain the keyword are: \n", search_result)

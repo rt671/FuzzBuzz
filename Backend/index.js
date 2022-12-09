@@ -75,7 +75,7 @@ const express = require("express");
 const { spawn, spawnSync } = require("child_process");
 const app = express();
 const port = 3000;
- 
+
 app.get("/upload", (req, res) => {
   let dataToSend;
   const data = "India, officially the Republic of India, is a country in South Asia." 
@@ -97,6 +97,7 @@ app.get("/upload", (req, res) => {
   let encr_idx;
   encr_idx = encrypt.output.toString('utf-8')
   // console.log(encr_idx)
+  encryptedIndex = encr_idx;
   res.send(encr_idx)
 });
  
@@ -105,14 +106,14 @@ app.get('/search', (req, res)=>{
   const keyword = "india";
   const trapdoor = spawnSync("python", [
     "D:/work/BTP/CODE/Main/trapdoor.py",
-    keyword,
+    keyword
   ]);
   
-  const search = spawnSync("python", [
-    "D:/work/BTP/CODE/Main/search.py",
-    keyword,
-  ]);
-  dataToSend = search.output.toString('utf-8')
+  // const search = spawnSync("python", [
+  //   "D:/work/BTP/CODE/Main/search.py",
+  //   keyword,
+  // ]);
+  dataToSend = trapdoor.output.toString('utf-8')
   res.send(dataToSend)
 })
  
