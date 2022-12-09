@@ -75,26 +75,27 @@ const express = require("express");
 const { spawn, spawnSync } = require("child_process");
 const app = express();
 const port = 3000;
- 
+ let encr_idx;
 app.get("/upload", (req, res) => {
   let dataToSend;
   const data = "India, officially the Republic of India, is a country in South Asia." 
   // It is the seventh largest country by area, the second most populous country, and the most populous democracy in the world. Bounded by the Indian Ocean on the south, the Arabian Sea on the southwest, and the Bay of Bengal on the southeast, it shares land borders with Pakistan to the west; China, Nepal, and Bhutan to the north; and Bangladesh and Myanmar to the east. In the Indian Ocean, India is in the vicinity of Sri Lanka and the Maldives; its Andaman and Nicobar Islands share a maritime border with Thailand, Myanmar, and Indonesia. The nation's capital city is New Delhi.";
  
   const indexing = spawnSync("python", [
-    "D:/work/BTP/CODE/Main/indexing.py",
+    "/Users/varunjain/Fuzzy_Search/FuzzBuzz/Main/indexing.py",
     data,
   ]);
 
   dataToSend = indexing.output.toString('utf8') + "\n";
-  // console.log(dataToSend)
+  //  console.log(dataToSend)
   // res.send(dataToSend)
   const encrypt = spawnSync("python", [
-    "D:/work/BTP/CODE/Main/encrypt_index.py",
-    data, dataToSend
+    "/Users/varunjain/Fuzzy_Search/FuzzBuzz/Main/encrypt_index.py",
+    data,
+    dataToSend,
   ]);
 
-  let encr_idx;
+  // let encr_idx;
   encr_idx = encrypt.output.toString('utf-8')
   // console.log(encr_idx)
   res.send(encr_idx)
@@ -104,13 +105,13 @@ app.get('/search', (req, res)=>{
   let dataToSend
   const keyword = "india";
   const trapdoor = spawnSync("python", [
-    "D:/work/BTP/CODE/Main/trapdoor.py",
+    "/Users/varunjain/Fuzzy_Search/FuzzBuzz/Main/trapdoor.py",
     keyword,
   ]);
   
   const search = spawnSync("python", [
-    "D:/work/BTP/CODE/Main/search.py",
-    keyword,
+    "/Users/varunjain/Fuzzy_Search/FuzzBuzz/Main/search.py",
+    keyword,encr_idx,
   ]);
   dataToSend = search.output.toString('utf-8')
   res.send(dataToSend)
