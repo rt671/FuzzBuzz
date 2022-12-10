@@ -3,6 +3,7 @@ from Crypto.Cipher import AES
 from Crypto.Hash import MD5
 import sys
 import os
+import ast
 # import time
 
 def build_codeword(ID, trapdoor):
@@ -20,7 +21,7 @@ def search_index(document, trapdoors):
     #     if str(build_codeword(row, trapdoor)) in data_index[row]:
     #         search_result.append(row)
 
-    for trapdoor in trapdoors.split(b"\n"):
+    for trapdoor in trapdoors:
         cntr=0
         for key, val in document.items():
             for keyword in key:
@@ -33,9 +34,18 @@ def search_index(document, trapdoors):
 
 if __name__ == "__main__":
 
-    # keyword = sys.argv[1]
-    keyword ="india"
-    keyword_trapdoor = open(keyword + "_trapdoor").read().strip()
-    search_result = search_index("yes_index.csv", keyword_trapdoor)
-    print ("The identifier for the set of files that contain the keyword are: \n", search_result)
-    os.remove(keyword+"_trapdoor")
+    trapdoor_set = sys.argv[1]
+    # ind_table_str = sys.argv[2]
+    # print("HELLO")
+    # print(ind_table_str)
+
+    # print("THE TRAPDOOR SET IN SEARCH.PY IS ", trapdoor_set)
+
+    # json_acceptable_string = ind_table_str.replace("'", "\"")
+    # index_table = ast.literal_eval(json_acceptable_string)
+    # print(index_table)
+    # # keyword_trapdoor = open(keyword + "_trapdoor").read().strip()
+    
+    # search_result = search_index(index_table, trapdoors)
+    # print ("The identifier for the set of files that contain the keyword are: \n", search_result)
+    # os.remove(keyword+"_trapdoor")

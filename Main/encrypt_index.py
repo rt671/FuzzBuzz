@@ -13,10 +13,10 @@ import ast
 def build_trapdoor(MK, keyword):
     keyword_index = MD5.new()
     keyword_index.update(str(keyword).encode('utf-8'))
-    # print(keyword_index)
-    # key=bytes(MK,'hex');
-    # key = bytes.fromhex("0123456789abcdef0123456789abcdef")
     MK = MK.encode('utf-8')
+    MK_length = len(MK)
+    if MK_length < 16:
+        MK += bytes(16 - MK_length)
     ECB_cipher = AES.new(MK, AES.MODE_ECB)
     # ECB_cipher = AES.new(key, AES.MODE_ECB)
     return ECB_cipher.encrypt(keyword_index.digest())
@@ -55,25 +55,11 @@ def searchable_encryption(index_table, master_key):
         # record = raw_data[row]
         enckey = build_index(master_key, cntr, keyArr)
         encval = build_index(master_key, cntr, valArr)
-        # for key in keyArr:
-        #     enckey = build_index(master_key, cntr, str(key))
-        #     print("Key for ", key, "is ", enckey, "\n")
-        #     # add enckey to an encrypted key array
-
-        # for val in valArr:
-        #     encval = build_index(master_key, cntr, str(val))
-        #     #add encval to an encrypted val array
-
         document_index[tuple(enckey)]  = encval
         
-        # document_index.append(res)
         cntr+=1
     # print("hello")
     print(document_index)
-    # time_cost = time.time() - start_time
-    # print (time_cost)
-    # document_index_dataframe = pd.DataFrame(np.array(document_index), columns=features)
-    # document_index_dataframe.to_csv("yes_index.csv") #document.split(".")[0] + 
 
     # encr_index_table = {}
     # i=0
@@ -81,46 +67,11 @@ def searchable_encryption(index_table, master_key):
     #     encr_row = build_index(i, index_table[key])
     #     encr_index_table[key] = encr_row
 
-def encrypt_doc(doc_name, master_key):
-    out = PdfFileWriter()
-    file = PdfFileReader(doc_name)
-    num = file.numPages
-    for idx in range(num):
-        page = file.getPage(idx)        
-        out.addPage(page)
-
-    password = master_key
-    out.encrypt(password)
-
-    with open(doc_name + "_encrypted.pdf", "wb") as f:
-        out.write(f)
-
 if __name__ == "__main__":
-    master_key = "0123456789abcdef0123456789abcdef"
-    # master_key = open("masterkey").read()
-    # if len(master_key) > 16:
-    #     print ("the length of master key is larger than 16 bytes, only the first 16 bytes are used")
-    #     master_key = bytes(master_key[:16])
-
-    # keyword_list_file_name = input("please input the file stores keyword type:  ")
-    # keyword_type_list = open("keywordlist").read().split(",")
-    # document_name="D:\work\BTP\CODE\Backend\index.csv"
-    doc_text = sys.argv[1]
-    index_str = sys.argv[2]
-    # print(doc_text)
-    # print(index_str)
+    index_str = sys.argv[1]
+    key = sys.argv[2]
     index_str = index_str[1:-4]
-    # index_str+="}"
-    # print("THE STRING IS ", index_str)
-    # print(index_str)
+    index_str+="}"
     json_acceptable_string = index_str.replace("'", "\"")
-    # print(json_acceptable_string)
-    # print(json_acceptable_string)
-    # index_table = json.loads(json_acceptable_string)
-    # print(index_table)
     index_table = ast.literal_eval(json_acceptable_string)
-    # print(index_table)
-    # index_name = "D:/work/BTP/CODE/Backend/index.csv"
-    searchable_encryption(index_table, master_key)
-    # encrypt_doc(doc_text, master_key)
-    # print ("Finished")
+    searchable_encryption(index_table, key)

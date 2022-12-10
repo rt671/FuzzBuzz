@@ -1,122 +1,93 @@
-// const express = require("express");
-// const { spawn } = require("child_process");
-// const app = express();
-// const port = 3000;
-// app.get("/", (req, res) => {
-//   var dataToSend;
-//   const data = "India, officially the Republic of India, is a country in South Asia. It is the seventh largest country by area, the second most populous country, and the most populous democracy in the world. Bounded by the Indian Ocean on the south, the Arabian Sea on the southwest, and the Bay of Bengal on the southeast, it shares land borders with Pakistan to the west; China, Nepal, and Bhutan to the north; and Bangladesh and Myanmar to the east. In the Indian Ocean, India is in the vicinity of Sri Lanka and the Maldives; its Andaman and Nicobar Islands share a maritime border with Thailand, Myanmar, and Indonesia. The nation's capital city is New Delhi."
-
-//   const python = spawn("python", ["D:/work/BTP/CODE/Main/indexing.py", data]);
-//   python.stdout.on("data", function (data) {
-//     console.log("Pipe data from python script ...");
-//     dataToSend = data.toString();
-//   });
-
-//   python.on("close", (code) => {
-//     console.log(`child process close all stdio with code ${code}`);
-//     res.send(dataToSend);
-//   });
-// });
-
-// app.get("/encrypt", (req, res) => {
-//   var dataToSend;
-//   var data = "India, officially the Republic of India, is a country in South Asia. It is the seventh largest country by area, the second most populous country, and the most populous democracy in the world. Bounded by the Indian Ocean on the south, the Arabian Sea on the southwest, and the Bay of Bengal on the southeast, it shares land borders with Pakistan to the west; China, Nepal, and Bhutan to the north; and Bangladesh and Myanmar to the east. In the Indian Ocean, India is in the vicinity of Sri Lanka and the Maldives; its Andaman and Nicobar Islands share a maritime border with Thailand, Myanmar, and Indonesia. The nation's capital city is New Delhi."
-
-//   const python = spawn("python", ["D:/work/BTP/CODE/Main/encrypt_index.py", data]);
-
-//   python.stdout.on("data", function (data) {
-//     console.log("Pipe data from python script ...");
-//     dataToSend = data.toString();
-//   });
-
-//   python.on("close", (code) => {
-//     console.log(`encrypt child process close all stdio with code ${code}`);
-//     res.send(dataToSend);
-//   });
-// });
-
-// app.get("/trapdoor", (req, res)=> {
-//     dataToSend ="thankYou"
-//     const keyword = "india";
-//     const python = spawn("python", ["D:/work/BTP/CODE/Main/trapdoor.py", keyword]);
-    
-//     python.stdout.on("data", function (data) {
-//       console.log("Pipe data from python script ...");
-//       dataToSend = data.toString();
-//     });
-
-//     python.on("close", (code) => {
-//       console.log(`child process close all stdio with code ${code}`);
-//       res.send(dataToSend);
-//     });
-//   })
-
-//   app.get("/search", (req, res) => {
-//       const keyword = "india";
-//       const python = spawn("python", ["D:/work/BTP/CODE/Main/search.py", keyword]);
-      
-//       python.stdout.on("data", function (data) {
-//         console.log("Pipe data from python script ...");
-//         dataToSend = data.toString();
-//       });
-
-//       python.on("close", (code) => {
-//         console.log(`child process close all stdio with code ${code}`);
-//         res.send(dataToSend);
-//       });
-//     });
-
-// app.listen(port, () =>
-//   console.log(`Example app listening on port 
-// ${port}!`)
-// );
-
+const dotenv = require("dotenv");
 const express = require("express");
 const { spawn, spawnSync } = require("child_process");
 const app = express();
 const port = 3000;
+const mongoose = require("mongoose");
+dotenv.config();
+const Text = require("./Models/Text");
+const User = require("./Models/User");
 
-app.get("/upload", (req, res) => {
-  let dataToSend;
-  const data = "India, officially the Republic of India, is a country in South Asia." 
-  // It is the seventh largest country by area, the second most populous country, and the most populous democracy in the world. Bounded by the Indian Ocean on the south, the Arabian Sea on the southwest, and the Bay of Bengal on the southeast, it shares land borders with Pakistan to the west; China, Nepal, and Bhutan to the north; and Bangladesh and Myanmar to the east. In the Indian Ocean, India is in the vicinity of Sri Lanka and the Maldives; its Andaman and Nicobar Islands share a maritime border with Thailand, Myanmar, and Indonesia. The nation's capital city is New Delhi.";
- 
-  const indexing = spawnSync("python", [
-    "D:/work/BTP/CODE/Main/indexing.py",
-    data,
-  ]);
+mongoose.connect(process.env.DATABASE_URL);
+const db = mongoose.connection;
+db.on("error", (error) => console.error(error));
+db.once("open", () => console.log("Connected to Mongoose"));
 
-  dataToSend = indexing.output.toString('utf8') + "\n";
-  // console.log(dataToSend)
-  // res.send(dataToSend)
-  const encrypt = spawnSync("python", [
-    "D:/work/BTP/CODE/Main/encrypt_index.py",
-    data, dataToSend
-  ]);
+app.get("/upload", (req, res) => { //POST REQUEST=> INPUT: TEXT, PASSWORD
 
-  let encr_idx;
-  encr_idx = encrypt.output.toString('utf-8')
-  // console.log(encr_idx)
-  encryptedIndex = encr_idx;
-  res.send(encr_idx)
+  // const data = req.body.text;
+  // console.log(data)
+  const data = "America, officially the Republic of India, is a country in South Asia." 
+  const password = "helloworld"
+  
+  //CLEAN THE TEXT
+  const preprocess = spawnSync("python", ["D:/work/BTP/CODE/Main/preprocess.py", data]);
+  const cleaned_doc = preprocess.output.toString('utf8');
+
+  //Encrypt the Text
+  const encryptingDoc = spawnSync("python", ["D:/work/BTP/CODE/Main/encrypt_text.py", cleaned_doc, password]);
+  const encr_text = encryptingDoc.output.toString('utf8');
+
+  //Saving the Encrypted Text
+  const newText = new Text({text: encr_text});
+  newText
+    .save()
+    .then((savedText) => {
+      const id = savedText._id.toString(); 
+      console.log("encrypted text is saved!", "id is ", id)
+
+      //Creating the Index Table
+      const indexing = spawnSync("python", [
+        "D:/work/BTP/CODE/Main/indexing.py",
+        cleaned_doc, id
+      ]);
+      const idx_table = indexing.output.toString('utf8');
+
+      //Encrypting the Index Table
+      const encrypt = spawnSync("python", [
+        "D:/work/BTP/CODE/Main/encrypt_index.py",
+        idx_table, password
+      ]);
+      const encr_idx = encrypt.output.toString('utf-8')
+
+      //Saving the Encrypted Table
+      User.findOneAndUpdate({password:password}, {index:encr_idx}, {new:true})
+      .catch(err => console.log(err))
+
+      res.json(encr_idx)
+
+    })
+    .catch((err) => console.log(err));
 });
- 
-app.get('/search', (req, res)=>{
-  let dataToSend
+
+
+app.get('/search', (req, res)=>{ //POST =>  KEYWORD, PASSWORD
   const keyword = "india";
+  const password = "helloworld"
+
   const trapdoor = spawnSync("python", [
     "D:/work/BTP/CODE/Main/trapdoor.py",
-    keyword
+    keyword, password
   ]);
+  const trapdoor_set = trapdoor.output.toString('utf-8')
   
-  // const search = spawnSync("python", [
-  //   "D:/work/BTP/CODE/Main/search.py",
-  //   keyword,
-  // ]);
-  dataToSend = trapdoor.output.toString('utf-8')
-  res.send(dataToSend)
+  // console.log("TRAPDOOR SET IS ", trapdoor_set)
+
+  User.find({password:password})
+  .then(user => 
+    {
+        const ind_table = user[0].index;
+        // res.send(ind_table)
+        // console.log("THE TABLE IS ", ind_table);
+        const search = spawnSync("python", [
+          "D:/work/BTP/CODE/Main/search.py", trapdoor_set
+        ]);
+        const search_res = search.output.toString('utf-8')
+        res.send(search_res)
+    })
+  .catch(err => res.json(err))
 })
- 
+
 app.listen(port, () =>
   console.log(`Example app listening on port ${port}!`)
 );

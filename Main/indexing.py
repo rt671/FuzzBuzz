@@ -15,32 +15,18 @@ n_doc=4
 inverted_index = {}
 # document ="India, officially the Republic of India, is a country in South Asia. It is the seventh largest country by area, the second most populous country, and the most populous democracy in the world. Bounded by the Indian Ocean on the south, the Arabian Sea on the southwest, and the Bay of Bengal on the southeast, it shares land borders with Pakistan to the west; China, Nepal, and Bhutan to the north; and Bangladesh and Myanmar to the east. In the Indian Ocean, India is in the vicinity of Sri Lanka and the Maldives; its Andaman and Nicobar Islands share a maritime border with Thailand, Myanmar, and Indonesia. The nation's capital city is New Delhi."
 
-doc_text =""
-
 # document = sys.argv[1]
 # def text_extract(doc_name):
 #     pdfFileObj = open(doc_name, 'rb')
 #     pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
 #     doc_text = (pdfReader.getPage(0).extractText())
 #     pdfFileObj.close()
-
-def text_preprocess(text):
-    nltk_english_stopwords = stopwords.words('english')
-    # remove punctuations
-    trans = str.maketrans('', '', string.punctuation)
-    text = text.translate(trans)
-    # lowercase the text
-    text = text.lower()
-    # remove stopwords
-    cleaned_text = ""
-    for word in text.split():
-        if word not in nltk_english_stopwords:
-            cleaned_text += word + " " 
-    return cleaned_text
     
-def createIndex(fuzzySet, doc_no):
+def createIndex(fuzzySet, doc_no, doc_id):
+    inverted_index["document"] = inverted_index.get("document", [""]*n_doc)
+    inverted_index["document"][doc_no] = doc_id
     key = tuple(fuzzySet)
-    inverted_index[key]= inverted_index.get(key, [0]*1)
+    inverted_index[key]= inverted_index.get(key, [0]*n_doc)
     inverted_index[key][doc_no] +=1
 
 # def addFuzzy(keyword):
@@ -94,10 +80,10 @@ def createIndex(fuzzySet, doc_no):
 
 # addFuzzy2("cat", 1)
 
-def handleFuzzy(doc, doc_no):
+def handleFuzzy(doc, doc_no, doc_id):
     for term in doc.split():
         fuzzySet = addFuzzy(term, 2)
-        createIndex(fuzzySet, doc_no)
+        createIndex(fuzzySet, doc_no, doc_id)
 
 # doc_name = "D:/work/BTP/CODE/India.pdf"
 # print(doc_name)
@@ -105,13 +91,13 @@ def handleFuzzy(doc, doc_no):
 # doc_text = text_extract(doc_name)
 
 # CODE
-# doc_text = sys.argv[1]
-doc_text = "India, is a country."
+cleaned_doc = sys.argv[1]
+key = sys.argv[2]
+# doc_text = "India, is a country."
 #  Bounded by t officially the Republic of India,he Indian Ocean on the south, the Arabian Sea on the southwest, and the Bay of Bengal on the southeast, it shares land borders with Pakistan to the west; China, Nepal, and Bhutan to the north; and Bangladesh and Myanmar to the east. In the Indian Ocean, India is in the vicinity of Sri Lanka and the Maldives; its Andaman and Nicobar Islands share a maritime border with Thailand, Myanmar, and Indonesia. The nation's capital city is New Delhi."
 
-cleaned_doc = text_preprocess(doc_text)
 # print("\nThe cleaned text is: \n", cleaned_doc)
-handleFuzzy(cleaned_doc, 0)
+handleFuzzy(cleaned_doc, 0, key)
 print(str(inverted_index))
 # FINAL RESULT OF THIS CODE IS INVERTED INDEX TABLE, IN THE FORM OF A DICTIONARY
 
