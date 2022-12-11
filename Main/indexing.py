@@ -1,27 +1,10 @@
-import pandas as pd
-import numpy as np
-import time
-import string
-from nltk.corpus import stopwords
 import csv
 import sys
-import PyPDF2
-from fuzzywuzzy import fuzz
-from fuzzywuzzy import process
-import math
 from fuzzygeneration import addFuzzy
 
 n_doc=4
 inverted_index = {}
-# document ="India, officially the Republic of India, is a country in South Asia. It is the seventh largest country by area, the second most populous country, and the most populous democracy in the world. Bounded by the Indian Ocean on the south, the Arabian Sea on the southwest, and the Bay of Bengal on the southeast, it shares land borders with Pakistan to the west; China, Nepal, and Bhutan to the north; and Bangladesh and Myanmar to the east. In the Indian Ocean, India is in the vicinity of Sri Lanka and the Maldives; its Andaman and Nicobar Islands share a maritime border with Thailand, Myanmar, and Indonesia. The nation's capital city is New Delhi."
 
-# document = sys.argv[1]
-# def text_extract(doc_name):
-#     pdfFileObj = open(doc_name, 'rb')
-#     pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
-#     doc_text = (pdfReader.getPage(0).extractText())
-#     pdfFileObj.close()
-    
 def createIndex(fuzzySet, doc_no, doc_id):
     inverted_index["document"] = inverted_index.get("document", [""]*n_doc)
     inverted_index["document"][doc_no] = doc_id
@@ -82,25 +65,16 @@ def createIndex(fuzzySet, doc_no, doc_id):
 
 def handleFuzzy(doc, doc_no, doc_id):
     for term in doc.split():
-        fuzzySet = addFuzzy(term, 2)
+        fuzzySet = addFuzzy(term, 1)
         createIndex(fuzzySet, doc_no, doc_id)
 
-# doc_name = "D:/work/BTP/CODE/India.pdf"
-# print(doc_name)
-# print(open(doc_name).read())
-# doc_text = text_extract(doc_name)
-
-# CODE
 cleaned_doc = sys.argv[1]
+cleaned_doc = cleaned_doc[1:-1]
 key = sys.argv[2]
-# doc_text = "India, is a country."
-#  Bounded by t officially the Republic of India,he Indian Ocean on the south, the Arabian Sea on the southwest, and the Bay of Bengal on the southeast, it shares land borders with Pakistan to the west; China, Nepal, and Bhutan to the north; and Bangladesh and Myanmar to the east. In the Indian Ocean, India is in the vicinity of Sri Lanka and the Maldives; its Andaman and Nicobar Islands share a maritime border with Thailand, Myanmar, and Indonesia. The nation's capital city is New Delhi."
 
 # print("\nThe cleaned text is: \n", cleaned_doc)
 handleFuzzy(cleaned_doc, 0, key)
 print(str(inverted_index))
-# FINAL RESULT OF THIS CODE IS INVERTED INDEX TABLE, IN THE FORM OF A DICTIONARY
-
 
 # indexTable = createIndex(fuzzySet, 0)
 # print("\nThe inverted index table: \n", indexTable)
@@ -131,3 +105,8 @@ print(str(inverted_index))
 
 # writer = csv.writer(csvfile)
 #   writer.writerow([tuple_string])
+
+with open("hello.csv", "w") as outfile:
+    writerfile = csv.writer(outfile)
+    writerfile.writerow(inverted_index.keys())        
+    writerfile.writerows(zip(*inverted_index.values()))

@@ -1,3 +1,4 @@
+import csv
 from Crypto.Cipher import AES
 from Crypto.Hash import MD5
 import sys
@@ -19,13 +20,26 @@ if __name__ == "__main__":
 
     keyword = sys.argv[1]
     password = sys.argv[2]
-    fuzzySet = addFuzzy(keyword, 2)
-
+    # print("password is ", password)
+    fuzzySet = addFuzzy(keyword, 1)
     # trapdoor_file = open(keyword + "_trapdoor", "w+")
     trapdoor_set = []
     for word in fuzzySet:
         trapdoor_of_keyword = build_trapdoor(password, word)
-        # print(trapdoor_of_keyword)
-        trapdoor_set.append(trapdoor_of_keyword)
+        print(trapdoor_of_keyword, len(trapdoor_of_keyword))
+        trapdoor_string = trapdoor_of_keyword.hex()
+        # print(type(trapdoor_of_keyword))
+        # csv = str(trapdoor_of_keyword)[2:-1]
+        # csv = csv.replace('\\t', ',').replace('\\n', '\n')
+        # print(csv, file=open('trapdoors.csv', 'w'))
+        trapdoor_set.append(trapdoor_string)
+    # trapdoor_bytearr = bytearray(trapdoor_set)
+    # byteformat = bytes(trapdoor_bytearr)
 
-    print(trapdoor_set)
+    with open('trapdoors.csv', 'w') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(["Heading"])
+        for byte_obj in trapdoor_set:
+            writer.writerow([byte_obj])
+            
+    print("Saved Trapdoor file")

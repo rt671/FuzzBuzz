@@ -1,3 +1,4 @@
+import csv
 import pandas as pd
 from Crypto.Cipher import AES
 from Crypto.Hash import MD5
@@ -53,13 +54,15 @@ def searchable_encryption(index_table, master_key):
     cntr=0
     for keyArr, valArr in index_table.items():
         # record = raw_data[row]
+        # print(cntr, keyArr)
         enckey = build_index(master_key, cntr, keyArr)
         encval = build_index(master_key, cntr, valArr)
         document_index[tuple(enckey)]  = encval
         
         cntr+=1
+    return document_index
     # print("hello")
-    print(document_index)
+    # print(document_index)
 
     # encr_index_table = {}
     # i=0
@@ -70,8 +73,31 @@ def searchable_encryption(index_table, master_key):
 if __name__ == "__main__":
     index_str = sys.argv[1]
     key = sys.argv[2]
+    # print("password is ", key)
     index_str = index_str[1:-4]
     index_str+="}"
     json_acceptable_string = index_str.replace("'", "\"")
     index_table = ast.literal_eval(json_acceptable_string)
-    searchable_encryption(index_table, key)
+    document_index = searchable_encryption(index_table, key)
+
+    # with open('index.csv', 'w',  encoding="utf-8", newline='') as csvfile:
+    #     writer = csv.DictWriter(csvfile)
+    #     # writer.writeheader()
+    #     for key,value in document_index.items():
+    #         s = str(value)
+    #         keystr = str(key)
+    #         # print(csvstr)
+    #         # writer.writerow(csvstr)
+    #         writer.writerow([keystr, s[1:-1]])
+    #     # csvfile.write(csvstr.split("\n"))
+
+    # writing to csv file
+    with open("index.csv", "w") as outfile:
+        writerfile = csv.writer(outfile)
+        # dict_rows = [[key, value] for key, value in document_index.items()]
+        writerfile.writerow(document_index.keys())        
+        writerfile.writerows(zip(*document_index.values()))
+    print(document_index)
+
+    # for key, values in document_index.items():
+    #     valuestr = ','.join(values)
