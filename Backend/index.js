@@ -85,7 +85,7 @@ app.get('/search', (req, res)=>{ //POST =>  KEYWORD, PASSWORD
         console.log(search_res)
         // res.send(search_res)
 
-        const fetchArray = spawnSync("python", ["D:/work/BTP/CODE/Main/findnsort.py", 7]);
+        const fetchArray = spawnSync("python", ["D:/work/BTP/CODE/Main/findnsort.py", search_res]);
         const documents = fetchArray.output.toString('utf-8')
         console.log(documents)
         res.send(documents)

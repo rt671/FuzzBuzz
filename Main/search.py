@@ -54,14 +54,14 @@ def search_index(document, trapdoors):
 
     # flag = 0
     for trapdoor in trapdoors:
-        print("For the trapdoor:YES")
+        # print("For the trapdoor:YES")
         cntr=1
         byte_object = bytes.fromhex(trapdoor)
         # print(byte_object)
         for keyword_set in keyword_matrix:
-                print("for row ", cntr, "set is ", keyword_set)
+                # print("for row ", cntr, "set is ", keyword_set)
                 temp = str(build_codeword(cntr, byte_object))
-                print("the codeword is ", temp)
+                # print("the codeword is ", temp)
                 if(temp in keyword_set):
                     return cntr
                 cntr+=1
@@ -139,4 +139,4 @@ if __name__ == "__main__":
 
     trapdoors = obtain_trapdoors()
     search_result = search_index("index.csv", trapdoors)
-    print("The answer is ", search_result)
+    print(search_result)

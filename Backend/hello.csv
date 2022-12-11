@@ -1,5 +1,10 @@
-document,"('?cat', 'ca?t', 'ca?', '?at', 'cat?', 'cat', 'c?t', 'c?at')","('b?at', 'bat', 'ba?', 'bat?', '?at', '?bat', 'b?t', 'ba?t')","('ma?', 'mat', '?mat', 'm?t', '?at', 'mat?', 'ma?t', 'm?at')","('ra?', 'r?at', 'rat?', 'ra?t', '?at', '?rat', 'rat', 'r?t')","('s?at', 'sa?', 'sa?t', 's?t', '?at', 'sat?', 'sat', '?sat')","('ch?at', '?chat', 'ch?t', 'cha?', 'chat?', 'cha?t', 'chat', '?hat', 'c?at', 'c?hat')","('wait', 'wai?', '?ait', '?wait', 'wai?t', 'wa?it', 'w?ait', 'wa?t', 'w?it', 'wait?')"
-63957019b3482b5494f27099,1,1,1,1,1,1,1
-,0,0,0,0,0,0,0
-,0,0,0,0,0,0,0
-,0,0,0,0,0,0,0
+document,"('cat?', 'ca?', 'c?t', '?at', 'cat', 'c?at', 'ca?t', '?cat')","('b?at', 'bat', 'b?t', '?bat', '?at', 'bat?', 'ba?', 'ba?t')","('m?t', '?mat', 'mat?', 'ma?t', 'ma?', '?at', 'm?at', 'mat')","('r?t', 'r?at', 'ra?t', 'ra?', '?at', 'rat', 'rat?', '?rat')","('sat', 'sa?', 's?at', '?sat', 'sat?', '?at', 's?t', 'sa?t')","('cha?t', '?chat', 'ch?t', 'chat', 'c?hat', 'chat?', 'cha?', '?hat', 'ch?at', 'c?at')","('wai?t', '?wait', 'w?it', 'wait', 'wa?t', '?ait', 'wa?it', 'wai?', 'wait?', 'w?ait')"
+
+639593a60ae8482af497ec91,1,1,1,1,1,1,1
+
+487584785845487564657467,0,0,0,0,0,0,5
+
+478947678476875867567568,0,0,0,0,0,0,2
+
+476984867856858675865768,0,0,0,0,0,0,4
+
