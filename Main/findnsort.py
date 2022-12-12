@@ -1,3 +1,4 @@
+import csv
 import pandas as pd
 import sys
 
@@ -21,7 +22,8 @@ def getDocArray(index):
     # print(pairs)
     res_docs = []
     for pair in pairs:
-        res_docs.append(pair[0])
+        if(pair[1]>0):
+            res_docs.append(pair[0])
     return res_docs
 
 index = sys.argv[1]
@@ -30,4 +32,11 @@ index = index[1:-3]
 ind = int(index)
 # print(ind, type(ind))
 ans = getDocArray(ind)
-print(ans)
+
+with open('results.csv', 'w') as csvfile:
+    writer = csv.writer(csvfile)
+    writer.writerow(["Heading"])
+    for doc_id in ans:
+        writer.writerow([doc_id])
+
+print("Results obtained")

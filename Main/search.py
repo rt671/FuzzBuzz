@@ -1,12 +1,7 @@
-import csv
 import pandas as pd
 from Crypto.Cipher import AES
 from Crypto.Hash import MD5
 import sys
-import os
-import ast
-import json
-# import time
 
 def build_codeword(ID, trapdoor):
     ID_index = MD5.new()

@@ -7,6 +7,10 @@ const userSchema = new mongoose.Schema({
   },
   index: {
     type:String
+  },
+  doc_no :{
+    type: Number,
+    default:0
   }
 })
 module.exports = mongoose.model('User', userSchema)

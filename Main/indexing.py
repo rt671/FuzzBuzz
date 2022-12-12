@@ -1,16 +1,62 @@
 import csv
+import os
 import sys
 from fuzzygeneration import addFuzzy
+import pandas as pd
+from ast import literal_eval
 
-n_doc=4
+n_doc=10
+cleaned_doc = sys.argv[1]
+cleaned_doc = cleaned_doc[1:-1]
+id = sys.argv[2]
+doc_no = sys.argv[3]
+# doc_no = doc_no[1:-3]
+doc_no = int(doc_no)
+# cleaned_doc = "hello the world of cats and dogs"
+# key = "1234567890"
+# doc_no=1
+# print("DOCUMENT NUMBER IN INDEXING IS ", doc_no)
+
+# path = "hello.csv"
+# isExist = os.path.exists(path)
 inverted_index = {}
+if(doc_no>0):
+    df = pd.read_csv("hello.csv")
+    inverted_index = df.to_dict(orient='list')
+    index_new = {}
+    for key, val in inverted_index.items(): 
+        # print(key, val)
+        if(key=="document"): index_new[key] = val
+        else:
+            tuple_str = literal_eval(key)
+            index_new[tuple_str] = val
+            inverted_index = index_new
+    # print("THE DICTIONARY I GET IS ", inverted_index)
 
 def createIndex(fuzzySet, doc_no, doc_id):
+    # print(inverted_index)
     inverted_index["document"] = inverted_index.get("document", [""]*n_doc)
     inverted_index["document"][doc_no] = doc_id
     key = tuple(fuzzySet)
+    # for keyy, val in inverted_index.items():
+    #     print(keyy, type(keyy))
+    #     print(key, type(key))
+        # keyy=keyy[1:-1]
+        # s = keyy.split(", ")
+        # res = tuple(keyy)
+        # print(keyy, type(res))
+        # if(keyy==key): print("YES")
+        # else: print("NO")
+    # print("NEXT")
     inverted_index[key]= inverted_index.get(key, [0]*n_doc)
     inverted_index[key][doc_no] +=1
+    
+    # if(key in inverted_index.items()):
+    #     inverted_index[key][doc_no] +=1
+    # else:
+    #     inverted_index[key] = [0]*n_doc
+    #     inverted_index[key][doc_no] +=1
+    # return inverted_index
 
 # def addFuzzy(keyword):
 #     # Set the maximum edit distance
@@ -64,16 +110,22 @@ def createIndex(fuzzySet, doc_no, doc_id):
 # addFuzzy2("cat", 1)
 
 def handleFuzzy(doc, doc_no, doc_id):
+    # print("DOC IS ", doc)
     for term in doc.split():
         fuzzySet = addFuzzy(term, 1)
+        # print("FUZZY SET IS ", fuzzySet)
         createIndex(fuzzySet, doc_no, doc_id)
 
-cleaned_doc = sys.argv[1]
-cleaned_doc = cleaned_doc[1:-1]
-key = sys.argv[2]
 
+# print(doc_no)
 # print("\nThe cleaned text is: \n", cleaned_doc)
-handleFuzzy(cleaned_doc, 0, key)
+handleFuzzy(cleaned_doc, doc_no, id)
+
+with open("hello.csv", "w") as outfile:
+    writerfile = csv.writer(outfile)
+    writerfile.writerow(inverted_index.keys())        
+    writerfile.writerows(zip(*inverted_index.values()))
+
 print(str(inverted_index))
 
 # indexTable = createIndex(fuzzySet, 0)
@@ -106,7 +158,3 @@ print(str(inverted_index))
 # writer = csv.writer(csvfile)
 #   writer.writerow([tuple_string])
 
-with open("hello.csv", "w") as outfile:
-    writerfile = csv.writer(outfile)
-    writerfile.writerow(inverted_index.keys())        
-    writerfile.writerows(zip(*inverted_index.values()))

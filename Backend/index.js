@@ -15,9 +15,9 @@ db.once("open", () => console.log("Connected to Mongoose"));
 
 app.get("/upload", (req, res) => { //POST REQUEST=> INPUT: TEXT, PASSWORD
 
-  const data = "cat bat mat rat sat chat wait"
+  const data = "hello the world of cats and hello cats"
   const password = "helloworld"
-  
+
   //CLEAN THE TEXT
   const preprocess = spawnSync("python", ["D:/work/BTP/CODE/Main/preprocess.py", data]);
   const cleaned_doc = preprocess.output.toString('utf8');
@@ -28,7 +28,12 @@ app.get("/upload", (req, res) => { //POST REQUEST=> INPUT: TEXT, PASSWORD
   const encr_text = encryptingDoc.output.toString('utf8');
   console.log(encr_text);
 
-  //SAVING THE ENCRYPTED TEXT
+  User.find({password:password})
+  .then(user => {
+      const docNo = user[0].doc_no
+      console.log("THE DOCUMENT NUMBER I GIVE IS ", docNo)
+
+      //SAVING THE ENCRYPTED TEXT
   const newText = new Text({text: encr_text});
   newText
     .save()
@@ -39,10 +44,10 @@ app.get("/upload", (req, res) => { //POST REQUEST=> INPUT: TEXT, PASSWORD
       //Creating the Index Table
       const indexing = spawnSync("python", [
         "D:/work/BTP/CODE/Main/indexing.py",
-        cleaned_doc, id
+        cleaned_doc, id, docNo
       ]);
       const idx_table = indexing.output.toString('utf8');
-
+      console.log("table is", idx_table)
       // Encrypting the Index Table
       const encrypt = spawnSync("python", [
         "D:/work/BTP/CODE/Main/encrypt_index.py",
@@ -54,23 +59,30 @@ app.get("/upload", (req, res) => { //POST REQUEST=> INPUT: TEXT, PASSWORD
 
       const encr_idx = encrypt.output.toString('utf8')
       //Saving the Encrypted Table
-      User.findOneAndUpdate({password:password}, {index:encr_idx}, {new:true})
+      User.findOneAndUpdate({password:password}, {index:encr_idx, doc_no: docNo+1}, {new:true})
       .catch(err => console.log(err))
-
       res.json(encr_idx)
-
     })
     .catch((err) => console.log(err));
-});
+  })
+  .catch(err => console.log(err))
+  // console.log("THE DOCUMENT NUMBER FETCHED IS ", docNo)
+
+  });
 
 
 app.get('/search', (req, res)=>{ //POST =>  KEYWORD, PASSWORD
-  const keyword = "wait";
+  const keyword = "cats";
   const password = "helloworld"
+
+  //CLEAN THE KEYWORDS
+  const preprocess = spawnSync("python", ["D:/work/BTP/CODE/Main/preprocess.py", keyword]);
+  const cleaned_keyword = preprocess.output.toString('utf8');
+  console.log(cleaned_keyword)
 
   const trapdoor = spawnSync("python", [
     "D:/work/BTP/CODE/Main/trapdoor.py",
-    keyword, password
+    cleaned_keyword, password
   ]);
   const trapdoor_set = trapdoor.output.toString('utf-8')
   console.log(trapdoor_set)

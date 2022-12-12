@@ -16,7 +16,7 @@ def encrypt_doc(text, MK):
 
 cleaned_doc = sys.argv[1]
 cleaned_doc = cleaned_doc[1:-1]
-print(cleaned_doc)
+# print(cleaned_doc)
 password = sys.argv[2]
 encrypted_stuff = encrypt_doc(cleaned_doc, password)
 print(encrypted_stuff)

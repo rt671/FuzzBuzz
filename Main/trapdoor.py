@@ -18,10 +18,16 @@ def build_trapdoor(MK, keyword):
 
 if __name__ == "__main__":
 
-    keyword = sys.argv[1]
+    keywords = sys.argv[1]
     password = sys.argv[2]
     # print("password is ", password)
-    fuzzySet = addFuzzy(keyword, 1)
+    finalfuzzySet = []
+    for term in keywords.split():
+         fuzzySet = addFuzzy(term, 1)
+         for fuzz in fuzzySet:
+            finalfuzzySet.append(fuzz)
+
+    # fuzzySet = addFuzzy(keywords, 1)
     # trapdoor_file = open(keyword + "_trapdoor", "w+")
     trapdoor_set = []
     for word in fuzzySet:

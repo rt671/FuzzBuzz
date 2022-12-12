@@ -3,12 +3,7 @@ import pandas as pd
 from Crypto.Cipher import AES
 from Crypto.Hash import MD5
 from Crypto.Random import random
-import numpy as np
-import time
-import hashlib
-from PyPDF2 import PdfFileWriter, PdfFileReader
 import sys
-import json
 import ast
 
 def build_trapdoor(MK, keyword):
@@ -16,6 +11,8 @@ def build_trapdoor(MK, keyword):
     keyword_index.update(str(keyword).encode('utf-8'))
     MK = MK.encode('utf-8')
     MK_length = len(MK)
+    if MK_length >16:
+        MK = MK[:16]
     if MK_length < 16:
         MK += bytes(16 - MK_length)
     ECB_cipher = AES.new(MK, AES.MODE_ECB)
@@ -72,13 +69,26 @@ def searchable_encryption(index_table, master_key):
 
 if __name__ == "__main__":
     index_str = sys.argv[1]
-    key = sys.argv[2]
+    master_key = sys.argv[2]
     # print("password is ", key)
-    index_str = index_str[1:-4]
-    index_str+="}"
-    json_acceptable_string = index_str.replace("'", "\"")
-    index_table = ast.literal_eval(json_acceptable_string)
-    document_index = searchable_encryption(index_table, key)
+    # print("INDEX STR IS ", index_str)
+    # index_str = index_str[1:-4]
+    # index_str+="}"
+    # print("INDEX STR IS ", index_str)
+    # json_acceptable_string = index_str.replace("'", "\"")
+    # index_table = ast.literal_eval(json_acceptable_string)
+    df = pd.read_csv("hello.csv")
+    inverted_index = df.to_dict(orient='list')
+    index_new = {}
+    for key, val in inverted_index.items(): 
+        # print(key, val)
+        if(key=="document"): index_new[key] = val
+        else:
+            tuple_str = ast.literal_eval(key)
+            index_new[tuple_str] = val
+            inverted_index = index_new
+    print("THE INVERTED INDEX IS ", inverted_index, type(inverted_index))
+    document_index = searchable_encryption(inverted_index, master_key)
 
     # with open('index.csv', 'w',  encoding="utf-8", newline='') as csvfile:
     #     writer = csv.DictWriter(csvfile)
