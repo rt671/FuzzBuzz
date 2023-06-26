@@ -1,25 +1,51 @@
+import csv
 from Crypto.Cipher import AES
 from Crypto.Hash import MD5
 import sys
+from fuzzygeneration import addFuzzy
 
 def build_trapdoor(MK, keyword):
     keyword_index = MD5.new()
     keyword_index.update(str(keyword).encode('utf-8'))
-    key = bytes.fromhex("0123456789abcdef0123456789abcdef")
-    ECB_cipher = AES.new(key, AES.MODE_ECB)
+    # key = bytes.fromhex("0123456789abcdef0123456789abcdef")
+    MK = MK.encode('utf-8')
+    MK_length = len(MK)
+    if MK_length < 16:
+        MK += bytes(16 - MK_length)
+    ECB_cipher = AES.new(MK, AES.MODE_ECB)
+    # ECB_cipher = AES.new(key, AES.MODE_ECB)
     return ECB_cipher.encrypt(keyword_index.digest())
 
 if __name__ == "__main__":
 
-    keyword = sys.argv[1]
-    # keyword = "india"
-    # master_key = open(master_key_file_name).read()
-    master_key = "0123456789abcdef0123456789abcdef"
-    # if len(master_key) > 16:
-    #     print ("the length of master key is larger than 16 bytes, only the first 16 bytes are used")
-    #     master_key = bytes(master_key[:16])
+    keywords = sys.argv[1]
+    password = sys.argv[2]
+    # print("password is ", password)
+    finalfuzzySet = []
+    for term in keywords.split():
+         fuzzySet = addFuzzy(term, 1)
+         for fuzz in fuzzySet:
+            finalfuzzySet.append(fuzz)
 
-    trapdoor_file = open(keyword + "_trapdoor", "w+")
-    trapdoor_of_keyword = build_trapdoor(master_key, keyword)
-    trapdoor_file.write(str(trapdoor_of_keyword))
-    trapdoor_file.close()
+    # fuzzySet = addFuzzy(keywords, 1)
+    # trapdoor_file = open(keyword + "_trapdoor", "w+")
+    trapdoor_set = []
+    for word in fuzzySet:
+        trapdoor_of_keyword = build_trapdoor(password, word)
+        print(trapdoor_of_keyword, len(trapdoor_of_keyword))
+        trapdoor_string = trapdoor_of_keyword.hex()
+        # print(type(trapdoor_of_keyword))
+        # csv = str(trapdoor_of_keyword)[2:-1]
+        # csv = csv.replace('\\t', ',').replace('\\n', '\n')
+        # print(csv, file=open('trapdoors.csv', 'w'))
+        trapdoor_set.append(trapdoor_string)
+    # trapdoor_bytearr = bytearray(trapdoor_set)
+    # byteformat = bytes(trapdoor_bytearr)
+
+    with open('trapdoors.csv', 'w') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(["Heading"])
+        for byte_obj in trapdoor_set:
+            writer.writerow([byte_obj])
+            
+    print("Saved Trapdoor file")
