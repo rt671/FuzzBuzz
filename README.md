@@ -1,7 +1,7 @@
 # FuzzBuzz
-## An algorithm that enables searching Fuzzy words over Cloud Data
+An algorithm that enables searching Fuzzy words over Cloud Data
 
-Before storing data in the cloud, the data is generally **encrypted** to ensure data security. However,
+Before storing data to the cloud, the data is generally **encrypted** to ensure data security. However,
 using the conventional search method to look through the encrypted cloud data is
 intractable and inefficient for the data user. One way is that the user downloads all
 the cipher data from the cloud and decrypts it locally, but that will require a huge
@@ -23,7 +23,6 @@ keywords, or in a case when the exact match fails, the closest feasible matching
 based on keyword similarity semantics.
 
 **The System Model** can be described as follows:
-
 ![image](https://github.com/rt671/FuzzBuzz/assets/82562103/5de8e323-17ac-499c-abba-bcebe2a50492)
 
 The system revolves around three main entities: 
