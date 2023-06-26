@@ -1,7 +1,7 @@
 # FuzzBuzz
-An algorithm that enables searching Fuzzy words over Cloud Data
+## An algorithm that enables searching Fuzzy words over Cloud Data
 
-Before storing data to the cloud, the data is generally **encrypted** to ensure data security. However,
+Before storing data in the cloud, the data is generally **encrypted** to ensure data security. However,
 using the conventional search method to look through the encrypted cloud data is
 intractable and inefficient for the data user. One way is that the user downloads all
 the cipher data from the cloud and decrypts it locally, but that will require a huge
