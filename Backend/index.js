@@ -33,7 +33,7 @@ app.get("/upload", (req, res) => { //POST REQUEST=> INPUT: TEXT, PASSWORD
       const docNo = user[0].doc_no
       console.log("THE DOCUMENT NUMBER I GIVE IS ", docNo)
 
-      //SAVING THE ENCRYPTED TEXT
+  //SAVING THE ENCRYPTED TEXT
   const newText = new Text({text: encr_text});
   newText
     .save()
