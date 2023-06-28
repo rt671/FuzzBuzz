@@ -1,1 +1,11 @@
-keyword,doc_1,doc_2,doc_3,doc_4
+document,"('?et', '?get', 'g?et', 'g?t', 'ge?', 'ge?t', 'get', 'get?')","('?he', '?the', 't?e', 't?he', 'th?', 'th?e', 'the', 'the?')","('?project', '?roject', 'p?oject', 'p?roject', 'pr?ject', 'pr?oject', 'pro?ect', 'pro?ject', 'proj?ct', 'proj?ect', 'proje?ct', 'proje?t', 'projec?', 'projec?t', 'project', 'project?')","('?ello', '?hello', 'h?ello', 'h?llo', 'he?llo', 'he?lo', 'hel?lo', 'hel?o', 'hell?', 'hell?o', 'hello', 'hello?')","('?ith', '?with', 'w?ith', 'w?th', 'wi?h', 'wi?th', 'wit?', 'wit?h', 'with', 'with?')","('?dogs', '?ogs', 'd?gs', 'd?ogs', 'do?gs', 'do?s', 'dog?', 'dog?s', 'dogs', 'dogs?')","('?orld', '?world', 'w?orld', 'w?rld', 'wo?ld', 'wo?rld', 'wor?d', 'wor?ld', 'worl?', 'worl?d', 'world', 'world?')","('?f', '?of', 'o?', 'o?f', 'of', 'of?')","('?ats', '?cats', 'c?ats', 'c?ts', 'ca?s', 'ca?ts', 'cat?', 'cat?s', 'cats', 'cats?')","('?and', '?nd', 'a?d', 'a?nd', 'an?', 'an?d', 'and', 'and?')"
+1234567890.0,1,1,1,1,1,1,0,0,0,0
+1234567890,0,1,0,1,0,1,1,1,1,1
+nan,0,0,0,0,0,0,0,0,0,0
+nan,0,0,0,0,0,0,0,0,0,0
+nan,0,0,0,0,0,0,0,0,0,0
+nan,0,0,0,0,0,0,0,0,0,0
+nan,0,0,0,0,0,0,0,0,0,0
+nan,0,0,0,0,0,0,0,0,0,0
+nan,0,0,0,0,0,0,0,0,0,0
+nan,0,0,0,0,0,0,0,0,0,0
